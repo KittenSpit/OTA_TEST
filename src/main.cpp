@@ -1,31 +1,47 @@
 #include <Arduino.h>
-
-#include <WiFi.h>
 #include <ArduinoOTA.h>
+
+#ifdef USE_8266
+  #include <ESP8266WiFi.h>
+#endif
+
+#ifndef USE_8266
+  #include <WiFi.h>
+#endif
+
 
 // Replace with your WiFi credentials
 const char* ssid = "PHD1 2.4";
 const char* password = "Andrew1Laura2";
 
-const unsigned long delay_interval = 10000; // Blink interval in milliseconds 10000 ms = 10 seconds 
+const unsigned long delay_interval = 1000; // Blink interval in milliseconds 10000 ms = 10 seconds 
 // LED pin (built-in LED is usually GPIO 2 on ESP32)
-const int ledPin = 25;
+
 bool ledState = false;
 
+#ifndef LED_PIN
+#define LED_PIN 2
+#endif
+
+#ifndef DEVICE_HOSTNAME
+#define DEVICE_HOSTNAME "8266-blink3"
+#endif
+
+const int ledPin = LED_PIN;
+
 void config_OTA(){
-  ArduinoOTA.setHostname("ESP32-Blink");
+  ArduinoOTA.setHostname(DEVICE_HOSTNAME);
   ArduinoOTA.setPassword("HellCat1");
-  ArduinoOTA
-    .onStart([]() {
+  ArduinoOTA.onStart([]() {
       Serial.println("Start updating...");
-    })
-    .onEnd([]() {
+    });
+    ArduinoOTA.onEnd([]() {
       Serial.println("\nUpdate complete!");
-    })
-    .onProgress([](unsigned int progress, unsigned int total) {
-      Serial.printf("Progress: %u%%\r", (progress / (total / 100)));
-    })
-    .onError([](ota_error_t error) {
+    });
+    ArduinoOTA.onProgress([](unsigned int progress, unsigned int total) {
+      Serial.printf("Progress: %u%%\r", (progress / (total / 1000)));
+    }); 
+    ArduinoOTA.onError([](ota_error_t error) {
       Serial.printf("Error[%u]: ", error);
       if (error == OTA_AUTH_ERROR) Serial.println("Auth Failed");
       else if (error == OTA_BEGIN_ERROR) Serial.println("Begin Failed");
