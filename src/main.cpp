@@ -33,7 +33,9 @@ void config_OTA(){
 #define STRINGIFY(x) #x
 #define TOSTRING(x) STRINGIFY(x)
 
-
+#ifndef DEVICE_HOSTNAME
+#define DEVICE_HOSTNAME "8266-blink3"
+#endif
 
   //Serial.println(TOSTRING(DEVICE_HOSTNAME));  
 ArduinoOTA.setPort(3232);
