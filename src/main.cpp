@@ -30,7 +30,16 @@ bool ledState = false;
 const int ledPin = LED_PIN;
 
 void config_OTA(){
-  ArduinoOTA.setHostname(DEVICE_HOSTNAME);
+#define STRINGIFY(x) #x
+#define TOSTRING(x) STRINGIFY(x)
+
+
+
+  //Serial.println(TOSTRING(DEVICE_HOSTNAME));  
+ArduinoOTA.setPort(3232);
+  ArduinoOTA.setHostname(TOSTRING(DEVICE_HOSTNAME));
+  //ArduinoOTA.setHostname("esp32-blink2");
+
   ArduinoOTA.setPassword("HellCat1");
   ArduinoOTA.onStart([]() {
       Serial.println("Start updating...");
